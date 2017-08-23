@@ -1,8 +1,11 @@
+#-*- coding: utf-8 -*-
+
 import numpy as np
 import pandas as pd
 import re
 import tensorflow as tf
 import random
+import sys
 
 
 ####################################################
@@ -21,22 +24,31 @@ def cut(contents, cut=2):
 ####################################################
 # divide train/test set function                   #
 ####################################################
+'''
 def divide(x, y, train_prop):
     random.seed(1234)
     x = np.array(x)
     y = np.array(y)
     tmp = np.random.permutation(np.arange(len(x)))
-    x_tr = x[tmp][:round(train_prop * len(x))]
-    y_tr = y[tmp][:round(train_prop * len(x))]
-    x_te = x[tmp][-(len(x)-round(train_prop * len(x))):]
-    y_te = y[tmp][-(len(x)-round(train_prop * len(x))):]
+    x_tr = x[tmp][0:0]
+    y_tr = y[tmp][0:0]
+    x_te = x[-1:]
+    y_te = y[-1:]
     return x_tr, x_te, y_tr, y_te
 
+'''
+def divide(x, y):
+
+    x = np.array(x)
+    y = np.array(y)
+    x_te = x[-1:]
+    y_te = y[-1:]
+    return x_te, y_te
 
 ####################################################
 # making input function                            #
 ####################################################
-def make_input(documents, max_document_length):
+def make_input(documents, max_document_length):  # 문장 , 200
     # tensorflow.contrib.learn.preprocessing 내에 VocabularyProcessor라는 클래스를 이용
     # 모든 문서에 등장하는 단어들에 인덱스를 할당
     # 길이가 다른 문서를 max_document_length로 맞춰주는 역할
@@ -79,7 +91,7 @@ def check_maxlength(contents):
 ####################################################
 # loading function                                 #
 ####################################################
-def loading_rdata(data_path, eng=True, num=True, punc=False):
+def loading_rdata(data_path):
     # R에서 title과 contents만 csv로 저장한걸 불러와서 제목과 컨텐츠로 분리
     # write.csv(corpus, data_path, fileEncoding='utf-8', row.names=F)
     corpus = pd.read_table(data_path, sep=",", encoding="utf-8")
@@ -87,15 +99,22 @@ def loading_rdata(data_path, eng=True, num=True, punc=False):
     contents = []
     points = []
 
+    # --------
+    #contents = sys.argv[1]
+    #points = sys.argv[2]
+    # --------
+
     for idx,doc in enumerate(corpus):
         if isNumber(doc[0]) is False:
             #content = normalize(doc[0], english=eng, number=num, punctuation=punc)
             #contents.append(content)
-
             contents.append(doc[0])
             points.append(doc[1])
-        if idx % 199999 is 0:
-            print('%d docs / %d save' % (idx, len(contents)))
+
+    contents.append(sys.argv[1])
+    #contents.append('좋아에요!!')
+    points.append(1.0)    # 하나 해서  acc 이 1이나오면  긍정   acc이 0이나오면 부정.
+
     return contents, points
 
 def isNumber(s):
