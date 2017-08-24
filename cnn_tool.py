@@ -111,8 +111,8 @@ def loading_rdata(data_path):
             contents.append(doc[0])
             points.append(doc[1])
 
-    contents.append(sys.argv[1])
-    #contents.append('좋아에요!!')
+    #contents.append(sys.argv[1])
+    contents.append('좋아에요!!')
     points.append(1.0)    # 하나 해서  acc 이 1이나오면  긍정   acc이 0이나오면 부정.
 
     return contents, points
