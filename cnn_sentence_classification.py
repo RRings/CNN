@@ -1,9 +1,6 @@
 #-*- coding: utf-8 -*-
-
 import os
-
-os.system("source bin/activate")
-os.system("ls -al")
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
 import time
 import datetime
@@ -197,7 +194,12 @@ with tf.Graph().as_default():
 
             loss, accuracy = sess.run([cnn.loss, cnn.accuracy],feed_dict)
           #  print(sess.run([cnn.loss, cnn.accuracy],feed_dict))
-            print(sess.run([cnn.accuracy], feed_dict))
+            a = sess.run([cnn.accuracy], feed_dict)
+            if a == [1.0] :
+                print('이 문장은 긍정적이네요 !')
+            else:
+                print('이 문장은 부정적이네요 ')
+            #print(sess.run([cnn.accuracy], feed_dict))
             time_str = datetime.datetime.now().isoformat()
            # print("{}: loss {:g}, acc {:g}".format(time_str, loss, accuracy))
 
